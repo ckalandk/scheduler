@@ -1,4 +1,4 @@
-# Robust Scheduler
+# schedcore
 
 ![Tests](https://github.com/ckalandk/scheduler/actions/workflows/tests.yml/badge.svg)
 ![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.13t%20%7C%203.14%20%7C%203.14t-blue)
@@ -7,7 +7,7 @@
 
 A lightweight, thread-safe, and zero-dependency concurrent task scheduling engine for Python.
 
-`scheduler` allows you to schedule tasks to execute in the future, handle recurring tasks, and process them concurrently using a custom-built, lightweight thread pool—all without the overhead of heavy third-party libraries.
+`schedcore` allows you to schedule tasks to execute in the future, handle recurring tasks, and process them concurrently using a custom-built, lightweight thread pool—all without the overhead of heavy third-party libraries.
 
 ## 🚀 Features
 
@@ -25,8 +25,8 @@ This project uses [uv](https://github.com/astral-sh/uv), you can easily set it u
 1. Clone the repository:
 
    ```bash
-   git clone [https://github.com/ckalandk/scheduler.git](https://github.com/ckalandk/scheduler.git)
-   cd scheduler
+   git clone [https://github.com/ckalandk/scheduler.git](https://github.com/ckalandk/schedcore.git)
+   cd schedcore
    ```
 
 2. Install the package in editable mode using uv:
@@ -42,7 +42,7 @@ gracefully shut it down
 
 ```python
 import time
-from scheduler import Scheduler, Task
+from schedcore import Scheduler, Task
 
 # 1. Define your tasks
 def greet(name: str):
