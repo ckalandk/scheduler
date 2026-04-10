@@ -85,6 +85,9 @@ class Scheduler:
 
         Tasks currently being executed will finish, but no new tasks
         will be processed from the queue.
+
+        Args:
+            wait (bool, optional): Whether to wait for the thread pool to finish executing tasks. Defaults to True.
         """
         with self.__cv:
             self.__stop_requested = True
