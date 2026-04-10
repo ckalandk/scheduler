@@ -5,15 +5,16 @@
 ![Linter: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
-A bare-metal, thread-safe, and zero-dependency concurrent task scheduling engine for Python.
+A lightway, thread-safe, and zero-dependency concurrent task scheduling engine for Python.
 
-`scheduler` allows you to schedule tasks to execute in the future, handle recurring tasks, and process them concurrently using a custom-built, highly optimized thread pool—all without the overhead of heavy third-party libraries.
+`scheduler` allows you to schedule tasks to execute in the future, handle recurring tasks, and process them concurrently using a custom-built, lightway thread pool—all without the overhead of heavy third-party libraries.
 
 ## 🚀 Features
 
 * **Zero Dependencies:** Built entirely using Python's standard library (`threading`, `queue`, `time`).
 * **Custom Execution Engine:** Uses a custom ThreadPool designed for absolute bare-metal performance.
 * **Thread-Safe Architecture:** Protected by condition variables and thread-safe queues to prevent race conditions and spurious wakeups.
+* **Configurable error handling:** uses callback function for error handling which can be supplied via `set_error_handler()`
 * **Graceful Shutdown:** Implements the "Poison Pill" pattern to ensure all background OS threads terminate cleanly without leaking memory.
 * **Modern Python:** Fully type-hinted and compatible with Python 3.10+.
 
@@ -50,8 +51,16 @@ def greet(name: str):
 def recurring_ping():
     print(f"[{time.strftime('%X')}] Ping...")
 
+def raise_error():
+    raise ValuerError("Task raised and exception")
+
+def error_handler(exception, task):
+    print(f"Task: {task} didn't execute du to an exception: {exception})
+
 # 2. Initialize the Scheduler (automatically sizes the ThreadPool based on CPU cores)
 scheduler = Scheduler(workers=4)
+scheduler.set_error_handler(error_hander)
+
 scheduler.start()
 
 print(f"[{time.strftime('%X')}] Scheduler started.")
