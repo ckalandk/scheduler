@@ -1,6 +1,7 @@
 import os
 import queue
 import threading
+from typing import Callable, Optional
 from .task import Task
 import logging
 
@@ -21,10 +22,24 @@ class ThreadPool:
     """
 
     def __init__(self, max_workers: int | None = None):
-        self.__max_workers = max_workers or (os.cpu_count() or 2) * 5
-        self.__queue = queue.Queue()
-        self.__workers = []
+        self.__max_workers: int = max_workers or (os.cpu_count() or 2) * 5
+        self.__queue: queue.Queue[Task | None] = queue.Queue()
+        self.__workers: list[threading.Thread] = []
+        self.__error_handler: Optional[Callable[[Exception, Task], None]] = None
         self.__setup_workers()
+
+    def set_error_handler(self, handler: Callable[[Exception, Task], None]):
+        """
+        Sets a custom error handler for exceptions raised during task execution.
+
+        The handler should be a callable that accepts two arguments:
+        - exception: The Exception instance that was raised.
+        - task: The Task instance that caused the exception.
+
+        Args:
+            handler (Callable[[Exception, Task], None]): The error handler function.
+        """
+        self.__error_handler = handler
 
     def submit(self, task: Task):
         """
@@ -43,7 +58,13 @@ class ThreadPool:
             try:
                 task()
             except Exception as e:
-                logger.exception(f"Task execution failed: {e}")
+                if self.__error_handler:
+                    try:
+                        self.__error_handler(e, task)
+                    except Exception as handler_error:
+                        logger.exception(f"Error in error handler: {handler_error}")
+                else:
+                    logger.exception(f"Task execution failed: {e}")
 
     def shutdown(self, wait: bool = True):
         """

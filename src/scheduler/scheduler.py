@@ -3,6 +3,7 @@ import queue
 import threading
 import time
 import itertools
+from typing import Callable
 from .task import Task
 from .threadPool import ThreadPool
 
@@ -46,6 +47,15 @@ class Scheduler:
             task_id = next(self.__counter)
             self.__queue.put((deadline, task_id, task))
             self.__cv.notify()
+
+    def set_error_handler(self, handler: Callable[[Exception, Task], None]):
+        """
+        Registers a global callback to handle exceptions raised by tasks.
+
+        Args:
+            handler: A function that takes the Exception and the Task instance.
+        """
+        self.__executor.set_error_handler(handler)
 
     def __run(self):
         while not self.__stop_requested:
