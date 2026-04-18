@@ -65,13 +65,13 @@ class Scheduler:
                 )
             if self.__stop_requested:
                 break
-            deadline, counter, task = self.__queue.get()
+            deadline, _, task = self.__queue.queue[0]
             delta = deadline - time.monotonic()
             if delta > 0:
                 with self.__cv:
-                    self.__queue.put((deadline, counter, task))
                     self.__cv.wait(timeout=delta)
             else:
+                self.__queue.get()
                 self.__executor.submit(task)
                 if task.repeat:
                     self.schedule(task)
