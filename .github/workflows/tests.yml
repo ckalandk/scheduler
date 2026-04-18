@@ -3,8 +3,16 @@ name: Tests
 on:
   push:
     branches: [ main, master ]
+    paths-ignore: &ignored_paths
+      - "docs/**"
+      - "examples/**"
+      - "scripts/**"
+      - .precommit-config.yaml
+      - README.md
+      - LICENSE
   pull_request:
     branches: [ main, master ]
+    paths-ignore: *ignored_paths
 
 jobs:
   test:
@@ -13,7 +21,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # We start at 3.10 as your "golden floor"
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.13t", "3.14", "3.14t"]
 
     steps:
